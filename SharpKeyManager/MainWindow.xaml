@@ -1,0 +1,61 @@
+﻿<Controls:MetroWindow x:Class="SharpKeyManager.MainWindow"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="Key manager" Height="369.976" Width="567.312" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Icon="Rafiqul-Hassan-Blogger-Key.ico">
+    <Grid Margin="0,1,0,-1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <RichTextBox x:Name="version" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="182" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Margin="0,315,0,0">
+            <FlowDocument/>
+        </RichTextBox>
+        <RichTextBox x:Name="currentkey" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="313" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Margin="90,-74,0,0">
+            <FlowDocument/>
+        </RichTextBox>
+        <GroupBox Header="Status Info" HorizontalAlignment="Left" Height="230" Margin="142,10,-448,0" VerticalAlignment="Top" Width="306" FontSize="15" Grid.Column="1"/>
+        <Button x:Name="refresh" Content="Refresh" HorizontalAlignment="Left" Height="25" Margin="123,12,-181,0" VerticalAlignment="Top" Width="58" Click="refresh_Click" Grid.Column="1"/>
+        <GroupBox Header="Edit Key" HorizontalAlignment="Left" Height="307" Margin="110,494,-69,-460" VerticalAlignment="Top" Width="520" Grid.ColumnSpan="2">
+            <Label Content="Game Path" HorizontalAlignment="Left" Height="35" Margin="10,100,0,0" VerticalAlignment="Top" Width="76" Foreground="White"/>
+        </GroupBox>
+        <TextBox x:Name="keybox" HorizontalAlignment="Left" Height="26" Margin="30,51,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="233" Controls:TextBoxHelper.Watermark="Enter a valid cod4 key" TextChanged="keybox_TextChanged"/>
+        <Button x:Name="save" Content="Set" HorizontalAlignment="Left" Height="28" Margin="278,51,0,0" VerticalAlignment="Top" Width="78" Click="save_Click"/>
+        <ComboBox x:Name="selectkey" HorizontalAlignment="Left" Height="26" Margin="31,94,0,0" VerticalAlignment="Top" Width="233" RenderTransformOrigin="-2.286,0.962" SelectedIndex="0">
+            <ComboBoxItem Content="[Select Key]"/>
+        </ComboBox>
+        <Button x:Name="load" Content="Load" HorizontalAlignment="Left" Height="28" Margin="361,94,0,0" VerticalAlignment="Top" Width="151" Click="load_Click"/>
+        <RichTextBox x:Name="cdkeybox" HorizontalAlignment="Left" Height="33" VerticalAlignment="Top" Width="306" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Margin="142,119,-448,0" FontSize="15" Grid.Column="1">
+            <FlowDocument/>
+        </RichTextBox>
+        <Button x:Name="remove" Content="Remove" HorizontalAlignment="Left" Height="28" Margin="278,94,0,0" VerticalAlignment="Top" Width="65" Click="remove_Click"/>
+        <TextBox x:Name="gamepath" HorizontalAlignment="Left" Height="26" Margin="110,144,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="153" IsEnabled="False"/>
+        <Button x:Name="browse_gamepath" Content="Browse" HorizontalAlignment="Left" Height="25" Margin="278,144,0,0" VerticalAlignment="Top" Width="69" Click="browse_path"/>
+        <Button x:Name="openlocation" Content="Open Location" HorizontalAlignment="Left" Height="25" Margin="361,145,0,0" VerticalAlignment="Top" Width="151" RenderTransformOrigin="1.218,0.586" Click="openlocation_Click"/>
+        <Label Content="Cod4X" HorizontalAlignment="Left" Height="35" Margin="31,189,0,0" VerticalAlignment="Top" Width="76" Foreground="White"/>
+        <Button x:Name="cod4xinstall" Content="Install" HorizontalAlignment="Left" Height="25" Margin="107,190,0,0" VerticalAlignment="Top" Width="119" Click="cod4xinstall_Click"/>
+        <Button x:Name="cod4xuninstall" Content="Uninsatall" HorizontalAlignment="Left" Height="25" Margin="251,190,0,0" VerticalAlignment="Top" Width="119" Click="cod4xuninstall_Click"/>
+        <Label Content="Play" HorizontalAlignment="Left" Height="35" Margin="30,224,0,0" VerticalAlignment="Top" Width="76" Foreground="White"/>
+        <Button x:Name="connect" Content="Open &amp; Connect" HorizontalAlignment="Left" Height="25" Margin="421,230,0,0" VerticalAlignment="Top" Width="119" RenderTransformOrigin="0.578,0.573" Click="connect_Click"/>
+        <TextBox x:Name="ipbox1" HorizontalAlignment="Left" Height="26" Margin="90,229,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="225" Controls:TextBoxHelper.Watermark="IP" TextChanged="ipbox1_TextChanged"/>
+        <Button x:Name="generate" Content="Generate" HorizontalAlignment="Left" Height="28" Margin="374,0,0,262" VerticalAlignment="Bottom" Width="138" Click="generate_Click"/>
+        <Button x:Name="launchgame" Content="Launch Game" HorizontalAlignment="Left" Height="35" Margin="45,271,0,0" VerticalAlignment="Top" Width="467" Click="launchgame_Click"/>
+        <Label Content=":" HorizontalAlignment="Left" Height="35" Margin="315,225,0,0" VerticalAlignment="Top" Width="32" Foreground="White" FontSize="16"/>
+        <TextBox x:Name="portbox1" HorizontalAlignment="Left" Height="26" Margin="329,229,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="87" Controls:TextBoxHelper.Watermark="Port"/>
+        <Label Content="Game Path" HorizontalAlignment="Left" Height="35" Margin="30,145,0,0" VerticalAlignment="Top" Width="76" Foreground="White"/>
+        <RichTextBox x:Name="guidbox" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Height="29" VerticalAlignment="Top" Width="310" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" FontSize="15" Margin="0,315,0,-3">
+            <FlowDocument/>
+        </RichTextBox>
+        <RichTextBox x:Name="ipbox" HorizontalAlignment="Left" Height="33" VerticalAlignment="Top" Width="306" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" FontSize="15">
+            <FlowDocument/>
+        </RichTextBox>
+    </Grid>
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Image x:Name="flagimg" Width="20" Height="20"/>
+            <RichTextBox x:Name="countrybox" Width="130" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" FontSize="15" >
+                <FlowDocument/>
+            </RichTextBox>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    </Controls:MetroWindow>
