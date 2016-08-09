@@ -20,6 +20,7 @@ namespace SharpKeyManager
         private string jsonfile;
         public string gamepath { get; set; }
         public string cod4xpath { get; set; }
+        public string ProcessName { get; set; }
 
         public ConfigManager(string jsonfilename)
         {

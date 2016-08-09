@@ -98,4 +98,10 @@ namespace SharpKeyManager
             }
         }
     }
+   static class Addresses
+   {
+       public static int KeyGenCdKey { get { return 0x00403230; } }
+       public static int GameCdKeypart1 { get { return 0x00724B84; } }
+       public static int GameCdKeypart2 { get { return 0x00724BA8; } }
+   }
 }

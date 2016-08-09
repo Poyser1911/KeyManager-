@@ -20,6 +20,7 @@ using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using System.IO;
 using System.IO.Compression;
+using System.Threading;
 
 namespace SharpKeyManager
 {
@@ -36,6 +37,7 @@ namespace SharpKeyManager
             InitializeComponent();
             Init();
             ipbox1.Text = Clipboard.GetText();
+
         }
         public void Refresh()
         {
@@ -54,17 +56,25 @@ namespace SharpKeyManager
             if (SaveFile.config.gamefilepath != "")
                 SetPaths(SaveFile.config.gamefilepath);
 
+            Thread status = new Thread(WatchGameStatus);
+            status.Start();
             Refresh();
         }
         public void ReloadInfo()
         {
+            string key = "";
             try
             {
                 Location i = GeoIP.GetCurrentLocation();
                 Print.Richtextbox(ipbox, "IP: ^3" + i.ip);
                 Print.Richtextbox(countrybox, "^3" + i.region + "^7," + i.countryname);
                 //Print.Richtextbox(cdkeybox, "Key: ^3" + CdKey.GetCod4Key());
-                Print.Richtextbox(guidbox, "Guid: ^3" + CdKey.CdkeyToGuid(CdKey.GetCod4Key()));
+                if (SaveFile.ProcessName == null || (key = CdKey.GetCod4Key((bool)temp.IsChecked, SaveFile.ProcessName)) == "")
+                    Print.Richtextbox(guidbox, "Guid: -");
+                else
+                    Print.Richtextbox(guidbox, "Guid: ^3" + CdKey.CdkeyToGuid(key));
+               
+
 
                 string filename = "img";
                 if (!Directory.Exists(filename))
@@ -79,7 +89,7 @@ namespace SharpKeyManager
                 if (File.Exists(filename + ".zip"))
                     File.Delete(filename + ".zip");
 
-                keybox.Text = CdKey.GetCod4Key();
+                keybox.Text = key;
                 keybox.SelectAll();
                 keybox.Focus();
             }
@@ -99,11 +109,32 @@ namespace SharpKeyManager
                     selectkey.Items.Add(key);
 
         }
+        public void SetKey()
+        {
+            bool istemp = (bool)temp.IsChecked;
+            if (istemp)
+            {
+                if (SaveFile.config.gamefilepath == "")
+                {
+                    if (!SetupPath())
+                        return;
+                }
+                else
+                {
+                    if (!MemoryReader.isRunnung(SaveFile.ProcessName))
+                    {
+                        System.Windows.Forms.MessageBox.Show(SaveFile.ProcessName + " Not Running", "KeyManager");
+                        return;
+                    }
+                    CdKey.SetCod4Key(keybox.Text, istemp, SaveFile.ProcessName);
+                }
+            }
+            else
+                CdKey.SetCod4Key(keybox.Text, istemp);
+        }
         private void save_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to Change Your Key to : " + keybox.Text, "Key Changer", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
-                return;
-            CdKey.SetCod4Key(keybox.Text);
+            SetKey();
             SaveFile.AddKey(keybox.Text);
             ReloadSaves();
             ReloadInfo();
@@ -113,8 +144,8 @@ namespace SharpKeyManager
             if (selectkey.SelectedIndex <= 0)
                 return;
 
-            CdKey.SetCod4Key(selectkey.SelectionBoxItem.ToString());
             keybox.Text = selectkey.SelectionBoxItem.ToString();
+            SetKey();
 
             ReloadInfo();
         }
@@ -151,17 +182,15 @@ namespace SharpKeyManager
                     File.WriteAllBytes(filename + ".exe", Properties.Resources.rzr_cod4);
 
                 KeyGenWatcher watcher = new KeyGenWatcher(filename);
-                watcher.OnGeneratorKeyChanged += OnGeneratorKeyChanged;
+                watcher.OnGeneratorKeyChanged += (args) =>
+                {
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        keybox.Text = args.Newkey;
+                    }));
+                };
             }
             catch (Exception x) { MessageBox.Show(x.Message, "Key Manager"); }
-        }
-
-        void OnGeneratorKeyChanged(OnGeneratorKeyChangedEventArgs e)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                keybox.Text = e.Newkey;
-            }));
         }
         private void browse_path(object sender, RoutedEventArgs e)
         {
@@ -186,6 +215,7 @@ namespace SharpKeyManager
 
             SaveFile.gamepath = System.IO.Path.GetDirectoryName(path);
             SaveFile.cod4xpath = SaveFile.gamepath + "\\cod4x_client";
+            SaveFile.ProcessName = System.IO.Path.GetFileNameWithoutExtension(path);
 
             gamepath.Text = path;
             gamepath.IsReadOnly = true;
@@ -300,6 +330,30 @@ namespace SharpKeyManager
         {
             JoinServer(true);
         }
+        public void WatchGameStatus()
+        {
+            try
+            {
+                while (true)
+                {
+                    if (!MemoryReader.isRunnung("iw3mp"))
+                        Dispatcher.Invoke(new Action(() => { Print.Richtextbox(status, "^7Status: Waiting for game.."); }));
+                    else
+                        Dispatcher.Invoke(new Action(() => { Print.Richtextbox(status, "^7Status: ^2Game Running"); }));
 
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception) { }
+        }
+
+        private void perm_checked(object sender, RoutedEventArgs e)
+        {
+            ReloadInfo();
+        }
+             private void perm_unchecked(object sender, RoutedEventArgs e)
+        {
+                ReloadInfo();
+        }
     }
 }

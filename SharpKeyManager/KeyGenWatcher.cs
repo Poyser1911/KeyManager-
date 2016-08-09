@@ -15,14 +15,6 @@ namespace SharpKeyManager
     }
     class KeyGenWatcher
     {
-        const int PROCESS_WM_READ = 0x0010;
-
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
-
-        [DllImport("kernel32.dll")]
-        public static extern bool ReadProcessMemory(int hProcess,
-          int lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
 
         public delegate void KeyChanged(OnGeneratorKeyChangedEventArgs e);
         public event KeyChanged OnGeneratorKeyChanged;
@@ -44,23 +36,17 @@ namespace SharpKeyManager
         private void WatchForChange()
         {
             ProcessName = ProcessName.Substring(4);
+            if (!MemoryReader.isRunnung(ProcessName))
+                return;
             Process process = Process.GetProcessesByName(ProcessName)[0];
-            IntPtr processHandle = OpenProcess(PROCESS_WM_READ, false, process.Id);
-
-            int bytesRead = 0;
-            byte[] buffer = new byte[24];
             string oldkey = string.Empty;
             string newkey = string.Empty;
             while (!process.HasExited)
             {
-                ReadProcessMemory((int)processHandle, 0x00403230, buffer, buffer.Length, ref bytesRead);
-                newkey = Encoding.Default.GetString(buffer, 0, bytesRead);
-
+                newkey = MemoryReader.ReadAddress(ProcessName, Addresses.KeyGenCdKey, 24);
                 if (oldkey != newkey)
                     OnGeneratorKeyChanged(new OnGeneratorKeyChangedEventArgs { Newkey = newkey });
-
                 oldkey = newkey;
-
                 Thread.Sleep(10);
             }
         }
