@@ -26,10 +26,13 @@ namespace SharpKeyManager
         {
             ProcessName = processname;
             Process generator = new Process();
-            generator.StartInfo.FileName = ProcessName+".exe";
-            generator.StartInfo.UseShellExecute = false;
+            generator.StartInfo.FileName = ProcessName + ".exe";
+            generator.StartInfo.UseShellExecute = true;
+            generator.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+            generator.StartInfo.CreateNoWindow = true;
             generator.Start();
 
+            //generator.WaitForExit();
             Thread watch = new Thread(WatchForChange);
             watch.Start();
         }
@@ -45,10 +48,17 @@ namespace SharpKeyManager
             {
                 newkey = MemoryReader.ReadAddress(ProcessName, Addresses.KeyGenCdKey, 24);
                 if (oldkey != newkey)
+                {
+                    if (newkey.Contains('\0'))
+                        continue;
+
                     OnGeneratorKeyChanged(new OnGeneratorKeyChangedEventArgs { Newkey = newkey });
+                    break;
+                }
                 oldkey = newkey;
-                Thread.Sleep(10);
+                //Thread.Sleep(10);
             }
+            process.Kill();
         }
     }
 }
